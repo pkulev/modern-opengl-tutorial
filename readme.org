@@ -1,0 +1,21 @@
+* Dependencies
+  Install:
+  - GLFW (can be installed via =meson wrap install glfw=)
+  - GLEW
+  - argparse (can be installed via =meson wrap install argparse=)
+
+* Create build directory
+  #+begin_src bash
+    $ meson setup builddir
+  #+end_src
+
+* IDE
+  #+begin_src bash
+    $ ninja -C builddir -t compdb c_COMPILER cpp_COMPILER > compile_commands.json
+  #+end_src
+
+* Build & run
+  #+begin_src bash
+    $ meson compile -C builddir
+    $ ./builddir/demo --help
+  #+end_src
