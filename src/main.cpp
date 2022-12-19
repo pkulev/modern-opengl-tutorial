@@ -115,10 +115,12 @@ int main(int argc, char **argv) {
         -0.5, -0.5,
          0.5, -0.5,
          0.5,  0.5,
-
-         0.5,  0.5,
         -0.5,  0.5,
-        -0.5, -0.5,
+    };
+
+    unsigned int indices[] = {
+        0, 1, 2,
+        2, 3, 0,
     };
     // clang-format on
 
@@ -134,6 +136,12 @@ int main(int argc, char **argv) {
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
     glEnableVertexAttribArray(0);
 
+    unsigned int ibo;
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 *  sizeof(unsigned int), indices, GL_STATIC_DRAW);
+
+
     std::string vertexShader = loadShader("./res/shaders/vertex.glsl");
     std::string fragmentShader = loadShader("./res/shaders/fragment.glsl");
 
@@ -145,7 +153,7 @@ int main(int argc, char **argv) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3 * 2);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
