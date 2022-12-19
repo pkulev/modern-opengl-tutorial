@@ -1,6 +1,7 @@
 #define GL_SILENCE_DEPRECATION
 
 #include <iostream>
+#include <fstream>
 
 #include <argparse/argparse.hpp>
 #include <GL/glew.h>
@@ -122,23 +123,15 @@ int main(int argc, char** argv) {
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
     glEnableVertexAttribArray(0);
 
-    std::string vertexShader =
-        "#version 330 core\n"
-        "\n"
-        "layout(location = 0) in vec4 position;\n"
-        "\n"
-        "void main() {\n"
-        "    gl_Position = position;\n"
-        "}\n";
+    std::ifstream vertexShaderFile;
+    vertexShaderFile.open("./res/shaders/vertex.glsl");
+    std::string vertexShader((std::istreambuf_iterator<char>(vertexShaderFile)),
+                         std::istreambuf_iterator<char>());
 
-    std::string fragmentShader =
-        "#version 330 core\n"
-        "\n"
-        "layout(location = 0) out vec4 color;\n"
-        "\n"
-        "void main() {\n"
-        "    color = vec4(1.0, 0.0, 0.0, 1.0);\n"
-        "}\n";
+    std::ifstream fragmentShaderFile;
+    fragmentShaderFile.open("./res/shaders/fragment.glsl");
+    std::string fragmentShader((std::istreambuf_iterator<char>(fragmentShaderFile)),
+                               std::istreambuf_iterator<char>());
 
     GLuint shader = createShader(vertexShader, fragmentShader);
     glUseProgram(shader);
@@ -157,6 +150,8 @@ int main(int argc, char** argv) {
         /* Poll for and process events */
         glfwPollEvents();
     }
+
+    glDeleteProgram(shader);
 
     glfwTerminate();
     return 0;
