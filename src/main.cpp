@@ -29,6 +29,15 @@ argparse::ArgumentParser parse_args(int argc, char** argv) {
 }
 
 
+static std::string loadShader(const std::string filepath) {
+    std::ifstream shaderFile;
+    shaderFile.open(filepath);
+    std::string shaderSource((std::istreambuf_iterator<char>(shaderFile)),
+                             std::istreambuf_iterator<char>());
+
+    return shaderSource;
+}
+
 static unsigned int compileShader(unsigned int type, const std::string& source) {
     GLuint id = glCreateShader(type);
     const char* src = source.c_str();
@@ -123,15 +132,8 @@ int main(int argc, char** argv) {
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
     glEnableVertexAttribArray(0);
 
-    std::ifstream vertexShaderFile;
-    vertexShaderFile.open("./res/shaders/vertex.glsl");
-    std::string vertexShader((std::istreambuf_iterator<char>(vertexShaderFile)),
-                         std::istreambuf_iterator<char>());
-
-    std::ifstream fragmentShaderFile;
-    fragmentShaderFile.open("./res/shaders/fragment.glsl");
-    std::string fragmentShader((std::istreambuf_iterator<char>(fragmentShaderFile)),
-                               std::istreambuf_iterator<char>());
+    std::string vertexShader = loadShader("./res/shaders/vertex.glsl");
+    std::string fragmentShader = loadShader("./res/shaders/fragment.glsl");
 
     GLuint shader = createShader(vertexShader, fragmentShader);
     glUseProgram(shader);
