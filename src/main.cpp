@@ -1,15 +1,14 @@
 #define GL_SILENCE_DEPRECATION
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
-#include <argparse/argparse.hpp>
 #include <GL/glew.h>
+#include <argparse/argparse.hpp>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-
-argparse::ArgumentParser parse_args(int argc, char** argv) {
+argparse::ArgumentParser parse_args(int argc, char **argv) {
     argparse::ArgumentParser program("ogl-sandbox");
 
     program.add_argument("square")
@@ -18,8 +17,7 @@ argparse::ArgumentParser parse_args(int argc, char** argv) {
 
     try {
         program.parse_args(argc, argv);
-    }
-    catch (const std::runtime_error& err) {
+    } catch (const std::runtime_error &err) {
         std::cerr << err.what() << std::endl;
         std::cerr << program;
         std::exit(1);
@@ -28,8 +26,7 @@ argparse::ArgumentParser parse_args(int argc, char** argv) {
     return program;
 }
 
-
-static std::string loadShader(const std::string filepath) {
+static std::string loadShader(const std::string &filepath) {
     std::ifstream shaderFile;
     shaderFile.open(filepath);
     std::string shaderSource((std::istreambuf_iterator<char>(shaderFile)),
@@ -38,9 +35,9 @@ static std::string loadShader(const std::string filepath) {
     return shaderSource;
 }
 
-static unsigned int compileShader(unsigned int type, const std::string& source) {
+static unsigned int compileShader(unsigned int type, const std::string &source) {
     GLuint id = glCreateShader(type);
-    const char* src = source.c_str();
+    const char *src = source.c_str();
     glShaderSource(id, 1, &src, nullptr);
     glCompileShader(id);
 
@@ -49,8 +46,8 @@ static unsigned int compileShader(unsigned int type, const std::string& source) 
     if (result == GL_FALSE) {
         int length;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-        char* message = (char*)alloca(length * sizeof(char));
-        glGetShaderInfoLog(id, length, &length,  message);
+        char *message = (char *)alloca(length * sizeof(char));
+        glGetShaderInfoLog(id, length, &length, message);
         std::cout << "Failed to compile "
                   << (type == GL_VERTEX_SHADER ? "vertex" : "fragment")
                   << "shader: " << message << std::endl;
@@ -61,7 +58,7 @@ static unsigned int compileShader(unsigned int type, const std::string& source) 
     return id;
 }
 
-static GLuint createShader(const std::string& vertexShader, const std::string& fragmentShader) {
+static GLuint createShader(const std::string &vertexShader, const std::string &fragmentShader) {
     GLuint program = glCreateProgram();
     GLuint vs = compileShader(GL_VERTEX_SHADER, vertexShader);
     GLuint fs = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
@@ -77,12 +74,12 @@ static GLuint createShader(const std::string& vertexShader, const std::string& f
     return program;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     auto args = parse_args(argc, argv);
     auto input = args.get<int>("square");
     std::cout << (input * input) << std::endl;
 
-    GLFWwindow* window;
+    GLFWwindow *window;
 
     /* Initialize the library */
     if (!glfwInit())
@@ -96,8 +93,7 @@ int main(int argc, char** argv) {
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "ogl-sandbox", NULL, NULL);
-    if (!window)
-    {
+    if (!window) {
         std::cout << "Error: Unable to create GLFW window." << std::endl;
         glfwTerminate();
         return -1;
@@ -114,11 +110,13 @@ int main(int argc, char** argv) {
 
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
+    // clang-format off
     float dots[6] = {
         -0.5, -0.5,
          0.0,  0.5,
          0.5, -0.5,
     };
+    // clang-format on
 
     unsigned int buffer;
     glGenBuffers(1, &buffer);
@@ -139,8 +137,7 @@ int main(int argc, char** argv) {
     glUseProgram(shader);
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
