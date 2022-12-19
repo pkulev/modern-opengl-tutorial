@@ -111,10 +111,14 @@ int main(int argc, char **argv) {
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
     // clang-format off
-    float dots[6] = {
+    float dots[] = {
         -0.5, -0.5,
-         0.0,  0.5,
          0.5, -0.5,
+         0.5,  0.5,
+
+         0.5,  0.5,
+        -0.5,  0.5,
+        -0.5, -0.5,
     };
     // clang-format on
 
@@ -126,7 +130,7 @@ int main(int argc, char **argv) {
     glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), dots, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), dots, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
     glEnableVertexAttribArray(0);
 
@@ -141,7 +145,7 @@ int main(int argc, char **argv) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 3 * 2);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
