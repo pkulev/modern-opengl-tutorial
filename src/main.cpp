@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
     CALL_GL(glBindVertexArray(vao));
 
     CALL_GL(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-    CALL_GL(glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), dots, GL_STATIC_DRAW));
+    CALL_GL(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), dots, GL_STATIC_DRAW));
     CALL_GL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
     CALL_GL(glEnableVertexAttribArray(0));
 
