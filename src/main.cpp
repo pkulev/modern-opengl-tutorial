@@ -104,6 +104,9 @@ int main(int argc, char **argv) {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    // Vsync
+    glfwSwapInterval(1);
+
     // TODO: check errors
     if (glewInit() != GLEW_OK) {
         std::cout << "Error: Unable to initialize GLEW." << std::endl;
@@ -150,11 +153,25 @@ int main(int argc, char **argv) {
     GLuint shader = createShader(vertexShader, fragmentShader);
     CALL_GL(glUseProgram(shader));
 
+    // Pass color into shader.
+    int u_Color = CALL_GL(glGetUniformLocation(shader, "u_Color"));
+    float r = 0.0;
+    float dr = 0.05;
+
     while (!glfwWindowShouldClose(window)) {
         /* Render here */
         CALL_GL(glClear(GL_COLOR_BUFFER_BIT));
 
+        CALL_GL(glUniform4f(u_Color, r, 0.3, 0.8, 1.0));
         CALL_GL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+
+        if (r > 1.0) {
+            dr = -dr;
+        } else if (r < 0.0) {
+            dr = -dr;
+        }
+
+        r += dr;
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
