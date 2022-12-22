@@ -1,5 +1,7 @@
 sources = files([
+  'index_buffer.cpp',
   'main.cpp',
+  'vertex_buffer.cpp',
 ])
 
 dependencies = [

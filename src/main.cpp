@@ -9,6 +9,8 @@
 #include <GLFW/glfw3.h>
 
 #include "opengl.hpp"
+#include "index_buffer.hpp"
+#include "vertex_buffer.hpp"
 
 argparse::ArgumentParser parse_args(int argc, char **argv) {
     argparse::ArgumentParser program("ogl-sandbox");
@@ -131,21 +133,17 @@ int main(int argc, char **argv) {
     // clang-format on
 
     unsigned int buffer;
-    CALL_GL(glGenBuffers(1, &buffer));
 
     unsigned int vao;
     CALL_GL(glGenVertexArrays(1, &vao));
     CALL_GL(glBindVertexArray(vao));
 
-    CALL_GL(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-    CALL_GL(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), dots, GL_STATIC_DRAW));
-    CALL_GL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
-    CALL_GL(glEnableVertexAttribArray(0));
+    VertexBuffer vb(dots, 4 * 2 * sizeof(float));
 
-    unsigned int ibo;
-    CALL_GL(glGenBuffers(1, &ibo));
-    CALL_GL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
-    CALL_GL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
+    CALL_GL(glEnableVertexAttribArray(0));
+    CALL_GL(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
+
+    IndexBuffer ib(indices, 6);
 
     std::string vertexShader = loadShader("./res/shaders/vertex.glsl");
     std::string fragmentShader = loadShader("./res/shaders/fragment.glsl");
@@ -162,7 +160,11 @@ int main(int argc, char **argv) {
         /* Render here */
         CALL_GL(glClear(GL_COLOR_BUFFER_BIT));
 
+        CALL_GL(glUseProgram(shader));
         CALL_GL(glUniform4f(u_Color, r, 0.3, 0.8, 1.0));
+
+        CALL_GL(glBindVertexArray(vao));
+        ib.Bind();
         CALL_GL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         if (r > 1.0) {
