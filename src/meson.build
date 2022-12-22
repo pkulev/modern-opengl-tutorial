@@ -1,6 +1,7 @@
 sources = files([
   'index_buffer.cpp',
   'main.cpp',
+  'opengl.cpp',
   'vertex_buffer.cpp',
 ])
 
